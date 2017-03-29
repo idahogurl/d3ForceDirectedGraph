@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,13 +73,11 @@
 "use strict";
 
 var SERVICE_URL = "https://raw.githubusercontent.com/DealPete/forceDirected/master/countries.json";
-//<img src="blank.gif" class="flag flag-cz" alt="Czech Republic" />
 //https://bl.ocks.org/curran/c48b1c89157cb98e389a63c4acc240e3
 //https://medium.com/@sxywu/understanding-the-force-ef1237017d5
-//http://stackoverflow.com/questions/41232299/svg-sprite-pattern-not-working-in-d3
 //http://stackoverflow.com/questions/28111480/adding-tooltip-to-svg-rect-tag
-__webpack_require__(6);
 var d3 = __webpack_require__(3);
+var d3_box = __webpack_require__(9);
 var Margin = (function () {
     function Margin(top, right, bottom, left) {
         this.top = top;
@@ -113,49 +111,41 @@ var ForceDirectedGraph = (function () {
     ForceDirectedGraph.prototype.createChart = function (nodes, links) {
         //top,right,bottom,left
         var margin = new Margin(0, 50, 0, 50);
-        var height = 800 - margin.top - margin.bottom;
-        var width = 1000 - margin.left - margin.right;
+        var height = 900 - margin.top - margin.bottom;
+        var width = 1200 - margin.left - margin.right;
         var svgChart = d3.select("#chart").append("svg")
-            .style("background", "#00FF00")
+            .style("background", "#000")
             .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .attr("transform", "translate(" + margin.left + ", " + margin.top + ")")
-            .append("g");
-        var tooltip = d3.select("#tooltip")
-            .append("div")
-            .style("pointer-events", "none")
-            .style("position", "absolute")
-            .style("padding", "10px")
-            .style("background", "black")
-            .style("color", "white")
-            .style("width", "150px")
-            .style("opacity", 0);
-        var node = svgChart.selectAll("rect")
-            .data(nodes)
-            .enter()
-            .append("rect")
-            .attr("class", function (c) {
-            return "flag flag-" + c.code;
-        });
-        var link = svgChart.selectAll("line")
+            .attr("height", height + margin.top + margin.bottom);
+        var link = svgChart.append("g")
+            .selectAll("line")
             .data(links).enter()
             .append("line")
-            .attr("stroke", "#FF0000")
+            .attr("stroke", "#FFF")
             .attr("stroke-width", 1);
+        var node = svgChart.append("g")
+            .selectAll("image")
+            .data(nodes)
+            .enter()
+            .append("image")
+            .attr("width", 16)
+            .attr("height", 11)
+            .attr("xlink:xlink:href", function (d) {
+            return "./flags/" + d.code + ".png";
+        });
+        var rectangleCollide = d3_box.bboxCollide([[-20, -20], [20, 20]]);
         var sim = d3.forceSimulation(nodes)
             .force("center", d3.forceCenter(width / 2, height / 2))
-            .force("charge", d3.forceManyBody().distanceMax(180))
-            .force("links", d3.forceLink(links));
+            .force("charge", d3.forceManyBody().distanceMin(50).distanceMax(50))
+            .force("collide", rectangleCollide)
+            .force("links", d3.forceLink(links).distance(50));
         sim.on("tick", function () {
+            //http://bl.ocks.org/natebates/273b99ddf86e2e2e58ff
             node.attr("x", function (d) {
                 return d.x;
             })
                 .attr("y", function (d) {
                 return d.y;
-            })
-                .append("title")
-                .html(function (d) {
-                return d.name;
             });
             link.attr("x1", function (d) {
                 return d.source.x;
@@ -169,6 +159,10 @@ var ForceDirectedGraph = (function () {
                 .attr("y2", function (d) {
                 return d.target.y;
             });
+        });
+        node.append("title")
+            .text(function (d) {
+            return d.name;
         });
     };
     ForceDirectedGraph.prototype.fetchData = function () {
@@ -193,76 +187,8 @@ var chart = new ForceDirectedGraph();
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(2)();
-// imports
-
-
-// module
-exports.push([module.i, "/*!\r\n * Generated with CSS Flag Sprite generator (https://www.flag-sprites.com/)\r\n */\n.flag {\n  display: inline-block;\n  width: 16px;\n  height: 11px;\n  background: url(" + __webpack_require__(4) + ") no-repeat; }\n  .flag.flag-sg {\n    background-position: -224px -121px; }\n  .flag.flag-sr {\n    background-position: -112px -132px; }\n  .flag.flag-er {\n    background-position: -208px -33px; }\n  .flag.flag-bm {\n    background-position: -128px -11px; }\n  .flag.flag-mw {\n    background-position: -80px -99px; }\n  .flag.flag-md {\n    background-position: -96px -88px; }\n  .flag.flag-mc {\n    background-position: -80px -88px; }\n  .flag.flag-np {\n    background-position: 0 -110px; }\n  .flag.flag-is {\n    background-position: -128px -66px; }\n  .flag.flag-nf {\n    background-position: -192px -99px; }\n  .flag.flag-sx {\n    background-position: -176px -132px; }\n  .flag.flag-uz {\n    background-position: -32px -154px; }\n  .flag.flag-ws {\n    background-position: -192px -154px; }\n  .flag.flag-bf {\n    background-position: -48px -11px; }\n  .flag.flag-ga {\n    background-position: -96px -44px; }\n  .flag.flag-fo {\n    background-position: -64px -44px; }\n  .flag.flag-kn {\n    background-position: -48px -77px; }\n  .flag.flag-gm {\n    background-position: -256px -44px; }\n  .flag.flag-qa {\n    background-position: -32px -121px; }\n  .flag.flag-pn {\n    background-position: -208px -110px; }\n  .flag.flag-tg {\n    background-position: 0 -143px; }\n  .flag.flag-mt {\n    background-position: -32px -99px; }\n  .flag.flag-hm {\n    background-position: -160px -55px; }\n  .flag.flag-lb {\n    background-position: -176px -77px; }\n  .flag.flag-sy {\n    background-position: -192px -132px; }\n  .flag.flag-za {\n    background-position: -256px -154px; }\n  .flag.flag-pe {\n    background-position: -96px -110px; }\n  .flag.flag-ck {\n    background-position: -128px -22px; }\n  .flag.flag-co {\n    background-position: -192px -22px; }\n  .flag.flag-somaliland {\n    background-position: -96px -132px; }\n  .flag.flag-im {\n    background-position: -48px -66px; }\n  .flag.flag-rs {\n    background-position: -80px -121px; }\n  .flag.flag-tz {\n    background-position: -208px -143px; }\n  .flag.flag-ky {\n    background-position: -128px -77px; }\n  .flag.flag-mu {\n    background-position: -48px -99px; }\n  .flag.flag-la {\n    background-position: -160px -77px; }\n  .flag.flag-ps {\n    background-position: -240px -110px; }\n  .flag.flag-vi {\n    background-position: -112px -154px; }\n  .flag.flag-et {\n    background-position: -240px -33px; }\n  .flag.flag-va {\n    background-position: -48px -154px; }\n  .flag.flag-mo {\n    background-position: -224px -88px; }\n  .flag.flag-wales {\n    background-position: -160px -154px; }\n  .flag.flag-do {\n    background-position: -96px -33px; }\n  .flag.flag-nr {\n    background-position: -16px -110px; }\n  .flag.flag-ke {\n    background-position: -240px -66px; }\n  .flag.flag-dk {\n    background-position: -64px -33px; }\n  .flag.flag-bs {\n    background-position: -192px -11px; }\n  .flag.flag-zm {\n    background-position: -16px -165px; }\n  .flag.flag-cz {\n    background-position: -16px -33px; }\n  .flag.flag-ax {\n    background-position: -224px 0; }\n  .flag.flag-ua {\n    background-position: -224px -143px; }\n  .flag.flag-ht {\n    background-position: -208px -55px; }\n  .flag.flag-si {\n    background-position: -256px -121px; }\n  .flag.flag-br {\n    background-position: -176px -11px; }\n  .flag.flag-tj {\n    background-position: -48px -143px; }\n  .flag.flag-gs {\n    background-position: -64px -55px; }\n  .flag.flag-au {\n    background-position: -192px 0; }\n  .flag.flag-sc {\n    background-position: -160px -121px; }\n  .flag.flag-na {\n    background-position: -144px -99px; }\n  .flag.flag-eu {\n    background-position: -256px -33px; }\n  .flag.flag-ai {\n    background-position: -64px 0; }\n  .flag.flag-tl {\n    background-position: -80px -143px; }\n  .flag.flag-sb {\n    background-position: -144px -121px; }\n  .flag.flag-gu {\n    background-position: -96px -55px; }\n  .flag.flag-tt {\n    background-position: -160px -143px; }\n  .flag.flag-je {\n    background-position: -176px -66px; }\n  .flag.flag-gg {\n    background-position: -192px -44px; }\n  .flag.flag-ie {\n    background-position: 0 -66px; }\n  .flag.flag-as {\n    background-position: -160px 0; }\n  .flag.flag-mk {\n    background-position: -160px -88px; }\n  .flag.flag-ls {\n    background-position: -256px -77px; }\n  .flag.flag-pw {\n    background-position: 0 -121px; }\n  .flag.flag-nz {\n    background-position: -48px -110px; }\n  .flag.flag-sd {\n    background-position: -192px -121px; }\n  .flag.flag-lr {\n    background-position: -240px -77px; }\n  .flag.flag-es {\n    background-position: -224px -33px; }\n  .flag.flag-ki {\n    background-position: -16px -77px; }\n  .flag.flag-th {\n    background-position: -16px -143px; }\n  .flag.flag-bd {\n    background-position: -16px -11px; }\n  .flag.flag-sn {\n    background-position: -64px -132px; }\n  .flag.flag-ge {\n    background-position: -144px -44px; }\n  .flag.flag-eg {\n    background-position: -160px -33px; }\n  .flag.flag-bb {\n    background-position: 0 -11px; }\n  .flag.flag-ae {\n    background-position: -16px 0; }\n  .flag.flag-gq {\n    background-position: -32px -55px; }\n  .flag.flag-nc {\n    background-position: -160px -99px; }\n  .flag.flag-ch {\n    background-position: -96px -22px; }\n  .flag.flag-lv {\n    background-position: -32px -88px; }\n  .flag.flag-ni {\n    background-position: -224px -99px; }\n  .flag.flag-nu {\n    background-position: -32px -110px; }\n  .flag.flag-us {\n    background-position: 0 -154px; }\n  .flag.flag-hk {\n    background-position: -144px -55px; }\n  .flag.flag-mp {\n    background-position: -240px -88px; }\n  .flag.flag-kz {\n    background-position: -144px -77px; }\n  .flag.flag-gn {\n    background-position: 0 -55px; }\n  .flag.flag-rw {\n    background-position: -112px -121px; }\n  .flag.flag-cd {\n    background-position: -48px -22px; }\n  .flag.flag-mh {\n    background-position: -144px -88px; }\n  .flag.flag-gh {\n    background-position: -208px -44px; }\n  .flag.flag-to {\n    background-position: -128px -143px; }\n  .flag.flag-be {\n    background-position: -32px -11px; }\n  .flag.flag-hr {\n    background-position: -192px -55px; }\n  .flag.flag-ba {\n    background-position: -256px 0; }\n  .flag.flag-in {\n    background-position: -64px -66px; }\n  .flag.flag-nl {\n    background-position: -240px -99px; }\n  .flag.flag-ec {\n    background-position: -128px -33px; }\n  .flag.flag-hu {\n    background-position: -224px -55px; }\n  .flag.flag-lc {\n    background-position: -192px -77px; }\n  .flag.flag-ru {\n    background-position: -96px -121px; }\n  .flag.flag-gp {\n    background-position: -16px -55px; }\n  .flag.flag-af {\n    background-position: -32px 0; }\n  .flag.flag-lt {\n    background-position: 0 -88px; }\n  .flag.flag-bg {\n    background-position: -64px -11px; }\n  .flag.flag-mz {\n    background-position: -128px -99px; }\n  .flag.flag-ee {\n    background-position: -144px -33px; }\n  .flag.flag-km {\n    background-position: -32px -77px; }\n  .flag.flag-dz {\n    background-position: -112px -33px; }\n  .flag.flag-dm {\n    background-position: -80px -33px; }\n  .flag.flag-gr {\n    background-position: -48px -55px; }\n  .flag.flag-vc {\n    background-position: -64px -154px; }\n  .flag.flag-jo {\n    background-position: -208px -66px; }\n  .flag.flag-an {\n    background-position: -112px 0; }\n  .flag.flag-scotland {\n    background-position: -176px -121px; }\n  .flag.flag-il {\n    background-position: -16px -66px; }\n  .flag.flag-cg {\n    background-position: -80px -22px; }\n  .flag.flag-mx {\n    background-position: -96px -99px; }\n  .flag.flag-ad {\n    background-position: 0 0; }\n  .flag.flag-ve {\n    background-position: -80px -154px; }\n  .flag.flag-kurdistan {\n    background-position: -96px -77px; }\n  .flag.flag-cn {\n    background-position: -176px -22px; }\n  .flag.flag-mq {\n    background-position: -256px -88px; }\n  .flag.flag-bw {\n    background-position: -240px -11px; }\n  .flag.flag-gw {\n    background-position: -112px -55px; }\n  .flag.flag-pa {\n    background-position: -80px -110px; }\n  .flag.flag-ss {\n    background-position: -128px -132px; }\n  .flag.flag-cf {\n    background-position: -64px -22px; }\n  .flag.flag-pm {\n    background-position: -192px -110px; }\n  .flag.flag-kg {\n    background-position: -256px -66px; }\n  .flag.flag-ng {\n    background-position: -208px -99px; }\n  .flag.flag-uy {\n    background-position: -16px -154px; }\n  .flag.flag-xk {\n    background-position: -208px -154px; }\n  .flag.flag-mm {\n    background-position: -192px -88px; }\n  .flag.flag-vu {\n    background-position: -144px -154px; }\n  .flag.flag-pt {\n    background-position: -256px -110px; }\n  .flag.flag-pg {\n    background-position: -128px -110px; }\n  .flag.flag-ug {\n    background-position: -240px -143px; }\n  .flag.flag-li {\n    background-position: -208px -77px; }\n  .flag.flag-bn {\n    background-position: -144px -11px; }\n  .flag.flag-sh {\n    background-position: -240px -121px; }\n  .flag.flag-zw {\n    background-position: -32px -165px; }\n  .flag.flag-gf {\n    background-position: -160px -44px; }\n  .flag.flag-um {\n    background-position: -256px -143px; }\n  .flag.flag-sk {\n    background-position: -16px -132px; }\n  .flag.flag-mr {\n    background-position: 0 -99px; }\n  .flag.flag-io {\n    background-position: -80px -66px; }\n  .flag.flag-cy {\n    background-position: 0 -33px; }\n  .flag.flag-gy {\n    background-position: -128px -55px; }\n  .flag.flag-bh {\n    background-position: -80px -11px; }\n  .flag.flag-vg {\n    background-position: -96px -154px; }\n  .flag.flag-ye {\n    background-position: -224px -154px; }\n  .flag.flag-tibet {\n    background-position: -32px -143px; }\n  .flag.flag-lk {\n    background-position: -224px -77px; }\n  .flag.flag-tv {\n    background-position: -176px -143px; }\n  .flag.flag-kw {\n    background-position: -112px -77px; }\n  .flag.flag-se {\n    background-position: -208px -121px; }\n  .flag.flag-tc {\n    background-position: -224px -132px; }\n  .flag.flag-gd {\n    background-position: -128px -44px; }\n  .flag.flag-ar {\n    background-position: -144px 0; }\n  .flag.flag-kh {\n    background-position: 0 -77px; }\n  .flag.flag-sv {\n    background-position: -160px -132px; }\n  .flag.flag-re {\n    background-position: -48px -121px; }\n  .flag.flag-dj {\n    background-position: -48px -33px; }\n  .flag.flag-sj {\n    background-position: 0 -132px; }\n  .flag.flag-tw {\n    background-position: -192px -143px; }\n  .flag.flag-ic {\n    background-position: -240px -55px; }\n  .flag.flag-gb {\n    background-position: -112px -44px; }\n  .flag.flag-tk {\n    background-position: -64px -143px; }\n  .flag.flag-td {\n    background-position: -240px -132px; }\n  .flag.flag-ml {\n    background-position: -176px -88px; }\n  .flag.flag-kp {\n    background-position: -64px -77px; }\n  .flag.flag-bi {\n    background-position: -96px -11px; }\n  .flag.flag-tm {\n    background-position: -96px -143px; }\n  .flag.flag-tn {\n    background-position: -112px -143px; }\n  .flag.flag-bo {\n    background-position: -160px -11px; }\n  .flag.flag-om {\n    background-position: -64px -110px; }\n  .flag.flag-it {\n    background-position: -144px -66px; }\n  .flag.flag-bt {\n    background-position: -208px -11px; }\n  .flag.flag-cw {\n    background-position: -256px -22px; }\n  .flag.flag-fi {\n    background-position: 0 -44px; }\n  .flag.flag-so {\n    background-position: -80px -132px; }\n  .flag.flag-mv {\n    background-position: -64px -99px; }\n  .flag.flag-ly {\n    background-position: -48px -88px; }\n  .flag.flag-eh {\n    background-position: -176px -33px; }\n  .flag.flag-tr {\n    background-position: -144px -143px; }\n  .flag.flag-az {\n    background-position: -240px 0; }\n  .flag.flag-gl {\n    background-position: -240px -44px; }\n  .flag.flag-zanzibar {\n    background-position: 0 -165px; }\n  .flag.flag-de {\n    background-position: -32px -33px; }\n  .flag.flag-sa {\n    background-position: -128px -121px; }\n  .flag.flag-pk {\n    background-position: -160px -110px; }\n  .flag.flag-bz {\n    background-position: 0 -22px; }\n  .flag.flag-ao {\n    background-position: -128px 0; }\n  .flag.flag-hn {\n    background-position: -176px -55px; }\n  .flag.flag-am {\n    background-position: -96px 0; }\n  .flag.flag-gt {\n    background-position: -80px -55px; }\n  .flag.flag-aw {\n    background-position: -208px 0; }\n  .flag.flag-jp {\n    background-position: -224px -66px; }\n  .flag.flag-pf {\n    background-position: -112px -110px; }\n  .flag.flag-sm {\n    background-position: -48px -132px; }\n  .flag.flag-cu {\n    background-position: -224px -22px; }\n  .flag.flag-by {\n    background-position: -256px -11px; }\n  .flag.flag-ca {\n    background-position: -16px -22px; }\n  .flag.flag-cv {\n    background-position: -240px -22px; }\n  .flag.flag-ro {\n    background-position: -64px -121px; }\n  .flag.flag-no {\n    background-position: -256px -99px; }\n  .flag.flag-me {\n    background-position: -112px -88px; }\n  .flag.flag-ma {\n    background-position: -64px -88px; }\n  .flag.flag-ph {\n    background-position: -144px -110px; }\n  .flag.flag-cm {\n    background-position: -160px -22px; }\n  .flag.flag-st {\n    background-position: -144px -132px; }\n  .flag.flag-iq {\n    background-position: -96px -66px; }\n  .flag.flag-ci {\n    background-position: -112px -22px; }\n  .flag.flag-wf {\n    background-position: -176px -154px; }\n  .flag.flag-lu {\n    background-position: -16px -88px; }\n  .flag.flag-england {\n    background-position: -192px -33px; }\n  .flag.flag-cr {\n    background-position: -208px -22px; }\n  .flag.flag-fj {\n    background-position: -16px -44px; }\n  .flag.flag-ms {\n    background-position: -16px -99px; }\n  .flag.flag-mn {\n    background-position: -208px -88px; }\n  .flag.flag-jm {\n    background-position: -192px -66px; }\n  .flag.flag-fr {\n    background-position: -80px -44px; }\n  .flag.flag-mg {\n    background-position: -128px -88px; }\n  .flag.flag-my {\n    background-position: -112px -99px; }\n  .flag.flag-yt {\n    background-position: -240px -154px; }\n  .flag.flag-bv {\n    background-position: -224px -11px; }\n  .flag.flag-catalonia {\n    background-position: -32px -22px; }\n  .flag.flag-fm {\n    background-position: -48px -44px; }\n  .flag.flag-pr {\n    background-position: -224px -110px; }\n  .flag.flag-al {\n    background-position: -80px 0; }\n  .flag.flag-ag {\n    background-position: -48px 0; }\n  .flag.flag-pl {\n    background-position: -176px -110px; }\n  .flag.flag-gi {\n    background-position: -224px -44px; }\n  .flag.flag-py {\n    background-position: -16px -121px; }\n  .flag.flag-id {\n    background-position: -256px -55px; }\n  .flag.flag-ir {\n    background-position: -112px -66px; }\n  .flag.flag-ne {\n    background-position: -176px -99px; }\n  .flag.flag-fk {\n    background-position: -32px -44px; }\n  .flag.flag-at {\n    background-position: -176px 0; }\n  .flag.flag-bj {\n    background-position: -112px -11px; }\n  .flag.flag-vn {\n    background-position: -128px -154px; }\n  .flag.flag-tf {\n    background-position: -256px -132px; }\n  .flag.flag-kr {\n    background-position: -80px -77px; }\n  .flag.flag-sl {\n    background-position: -32px -132px; }\n  .flag.flag-sz {\n    background-position: -208px -132px; }\n  .flag.flag-cl {\n    background-position: -144px -22px; }\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function() {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		var result = [];
-		for(var i = 0; i < this.length; i++) {
-			var item = this[i];
-			if(item[2]) {
-				result.push("@media " + item[2] + "{" + item[1] + "}");
-			} else {
-				result.push(item[1]);
-			}
-		}
-		return result.join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-
-/***/ }),
+/* 1 */,
+/* 2 */,
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16830,294 +16756,753 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "3c4ef45ab083a69a59b74c4b6e8a5d2b.png";
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-var stylesInDom = {},
-	memoize = function(fn) {
-		var memo;
-		return function () {
-			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-			return memo;
-		};
-	},
-	isOldIE = memoize(function() {
-		return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
-	}),
-	getHeadElement = memoize(function () {
-		return document.head || document.getElementsByTagName("head")[0];
-	}),
-	singletonElement = null,
-	singletonCounter = 0,
-	styleElementsInsertedAtTop = [];
-
-module.exports = function(list, options) {
-	if(typeof DEBUG !== "undefined" && DEBUG) {
-		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-	// By default, add <style> tags to the bottom of <head>.
-	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-	var styles = listToStyles(list);
-	addStylesToDom(styles, options);
-
-	return function update(newList) {
-		var mayRemove = [];
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-		if(newList) {
-			var newStyles = listToStyles(newList);
-			addStylesToDom(newStyles, options);
-		}
-		for(var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-			if(domStyle.refs === 0) {
-				for(var j = 0; j < domStyle.parts.length; j++)
-					domStyle.parts[j]();
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-}
-
-function addStylesToDom(styles, options) {
-	for(var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-		if(domStyle) {
-			domStyle.refs++;
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles(list) {
-	var styles = [];
-	var newStyles = {};
-	for(var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-		if(!newStyles[id])
-			styles.push(newStyles[id] = {id: id, parts: [part]});
-		else
-			newStyles[id].parts.push(part);
-	}
-	return styles;
-}
-
-function insertStyleElement(options, styleElement) {
-	var head = getHeadElement();
-	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-	if (options.insertAt === "top") {
-		if(!lastStyleElementInsertedAtTop) {
-			head.insertBefore(styleElement, head.firstChild);
-		} else if(lastStyleElementInsertedAtTop.nextSibling) {
-			head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			head.appendChild(styleElement);
-		}
-		styleElementsInsertedAtTop.push(styleElement);
-	} else if (options.insertAt === "bottom") {
-		head.appendChild(styleElement);
-	} else {
-		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-	}
-}
-
-function removeStyleElement(styleElement) {
-	styleElement.parentNode.removeChild(styleElement);
-	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-	if(idx >= 0) {
-		styleElementsInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement(options) {
-	var styleElement = document.createElement("style");
-	styleElement.type = "text/css";
-	insertStyleElement(options, styleElement);
-	return styleElement;
-}
-
-function createLinkElement(options) {
-	var linkElement = document.createElement("link");
-	linkElement.rel = "stylesheet";
-	insertStyleElement(options, linkElement);
-	return linkElement;
-}
-
-function addStyle(obj, options) {
-	var styleElement, update, remove;
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-		styleElement = singletonElement || (singletonElement = createStyleElement(options));
-		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-	} else if(obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function") {
-		styleElement = createLinkElement(options);
-		update = updateLink.bind(null, styleElement);
-		remove = function() {
-			removeStyleElement(styleElement);
-			if(styleElement.href)
-				URL.revokeObjectURL(styleElement.href);
-		};
-	} else {
-		styleElement = createStyleElement(options);
-		update = applyToTag.bind(null, styleElement);
-		remove = function() {
-			removeStyleElement(styleElement);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle(newObj) {
-		if(newObj) {
-			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-				return;
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag(styleElement, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = styleElement.childNodes;
-		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-		if (childNodes.length) {
-			styleElement.insertBefore(cssNode, childNodes[index]);
-		} else {
-			styleElement.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag(styleElement, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		styleElement.setAttribute("media", media)
-	}
-
-	if(styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = css;
-	} else {
-		while(styleElement.firstChild) {
-			styleElement.removeChild(styleElement.firstChild);
-		}
-		styleElement.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink(linkElement, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	if(sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = linkElement.href;
-
-	linkElement.href = URL.createObjectURL(blob);
-
-	if(oldSrc)
-		URL.revokeObjectURL(oldSrc);
-}
-
-
-/***/ }),
+/* 4 */,
+/* 5 */,
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
+module.exports = __webpack_require__(0);
 
-// load the styles
-var content = __webpack_require__(1);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(5)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./styles.scss", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/index.js!./styles.scss");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
 
 /***/ }),
-/* 7 */
+/* 7 */,
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function(node, x0, y0, x1, y1) {
+  this.node = node;
+  this.x0 = x0;
+  this.y0 = y0;
+  this.x1 = x1;
+  this.y1 = y1;
+});
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(0);
+(function (global, factory) {
+   true ? factory(exports, __webpack_require__(10)) :
+  typeof define === 'function' && define.amd ? define(['exports', 'd3-quadtree'], factory) :
+  (factory((global.d3 = global.d3 || {}),global.d3));
+}(this, function (exports,d3Quadtree) { 'use strict';
+
+  function bboxCollide (bbox) {
+
+    function x (d) {
+      return d.x + d.vx;
+    }
+
+    function y (d) {
+      return d.y + d.vy;
+    }
+
+    function constant (x) {
+      return function () {
+        return x;
+      };
+    }
+
+    var nodes,
+        boundingBoxes,
+        strength = 1,
+        iterations = 1;
+
+        if (typeof bbox !== "function") {
+          bbox = constant(bbox === null ? [[0,0][1,1]] : bbox)
+        }
+
+        function force () {
+          var i,
+              tree,
+              node,
+              xi,
+              yi,
+              bbi,
+              nx1,
+              ny1,
+              nx2,
+              ny2
+
+              var cornerNodes = []
+              nodes.forEach(function (d, i) {
+                cornerNodes.push({node: d, vx: d.vx, vy: d.vy, x: d.x + (boundingBoxes[i][1][0] + boundingBoxes[i][0][0]) / 2, y: d.y + (boundingBoxes[i][0][1] + boundingBoxes[i][1][1]) / 2})
+                cornerNodes.push({node: d, vx: d.vx, vy: d.vy, x: d.x + boundingBoxes[i][0][0], y: d.y + boundingBoxes[i][0][1]})
+                cornerNodes.push({node: d, vx: d.vx, vy: d.vy, x: d.x + boundingBoxes[i][0][0], y: d.y + boundingBoxes[i][1][1]})
+                cornerNodes.push({node: d, vx: d.vx, vy: d.vy, x: d.x + boundingBoxes[i][1][0], y: d.y + boundingBoxes[i][0][1]})
+                cornerNodes.push({node: d, vx: d.vx, vy: d.vy, x: d.x + boundingBoxes[i][1][0], y: d.y + boundingBoxes[i][1][1]})
+              })
+              var cn = cornerNodes.length
+
+          for (var k = 0; k < iterations; ++k) {
+            tree = d3Quadtree.quadtree(cornerNodes, x, y).visitAfter(prepareCorners);
+
+            for (i = 0; i < cn; ++i) {
+              var nodeI = ~~(i / 5);
+              node = nodes[nodeI]
+              bbi = boundingBoxes[nodeI]
+              xi = node.x + node.vx
+              yi = node.y + node.vy
+              nx1 = xi + bbi[0][0]
+              ny1 = yi + bbi[0][1]
+              nx2 = xi + bbi[1][0]
+              ny2 = yi + bbi[1][1]
+              tree.visit(apply);
+            }
+          }
+
+          function apply (quad, x0, y0, x1, y1) {
+              var data = quad.data
+              if (data) {
+                var bWidth = bbLength(bbi, 0),
+                bHeight = bbLength(bbi, 1);
+
+                if (data.node.index !== nodeI) {
+                  var dataNode = data.node
+                  var bbj = boundingBoxes[dataNode.index],
+                    dnx1 = dataNode.x + dataNode.vx + bbj[0][0],
+                    dny1 = dataNode.y + dataNode.vy + bbj[0][1],
+                    dnx2 = dataNode.x + dataNode.vx + bbj[1][0],
+                    dny2 = dataNode.y + dataNode.vy + bbj[1][1],
+                    dWidth = bbLength(bbj, 0),
+                    dHeight = bbLength(bbj, 1)
+
+                  if (nx1 <= dnx2 && dnx1 <= nx2 && ny1 <= dny2 && dny1 <= ny2) {
+
+                    var xSize = [Math.min.apply(null, [dnx1, dnx2, nx1, nx2]), Math.max.apply(null, [dnx1, dnx2, nx1, nx2])]
+                    var ySize = [Math.min.apply(null, [dny1, dny2, ny1, ny2]), Math.max.apply(null, [dny1, dny2, ny1, ny2])]
+
+                    var xOverlap = bWidth + dWidth - (xSize[1] - xSize[0])
+                    var yOverlap = bHeight + dHeight - (ySize[1] - ySize[0])
+
+                    var xBPush = xOverlap * strength * (yOverlap / bHeight)
+                    var yBPush = yOverlap * strength * (xOverlap / bWidth)
+
+                    var xDPush = xOverlap * strength * (yOverlap / dHeight)
+                    var yDPush = yOverlap * strength * (xOverlap / dWidth)
+
+                    if ((nx1 + nx2) / 2 < (dnx1 + dnx2) / 2) {
+                      node.vx -= xBPush
+                      dataNode.vx += xDPush
+                    }
+                    else {
+                      node.vx += xBPush
+                      dataNode.vx -= xDPush
+                    }
+                    if ((ny1 + ny2) / 2 < (dny1 + dny2) / 2) {
+                      node.vy -= yBPush
+                      dataNode.vy += yDPush
+                    }
+                    else {
+                      node.vy += yBPush
+                      dataNode.vy -= yDPush
+                    }
+                  }
+
+                }
+                return;
+              }
+
+              return x0 > nx2 || x1 < nx1 || y0 > ny2 || y1 < ny1;
+          }
+
+        }
+
+        function prepareCorners (quad) {
+
+          if (quad.data) {
+            return quad.bb = boundingBoxes[quad.data.node.index]
+          }
+            quad.bb = [[0,0],[0,0]]
+            for (var i = 0; i < 4; ++i) {
+              if (quad[i] && quad[i].bb[0][0] < quad.bb[0][0]) {
+                quad.bb[0][0] = quad[i].bb[0][0]
+              }
+              if (quad[i] && quad[i].bb[0][1] < quad.bb[0][1]) {
+                quad.bb[0][1] = quad[i].bb[0][1]
+              }
+              if (quad[i] && quad[i].bb[1][0] > quad.bb[1][0]) {
+                quad.bb[1][0] = quad[i].bb[1][0]
+              }
+              if (quad[i] && quad[i].bb[1][1] > quad.bb[1][1]) {
+                quad.bb[1][1] = quad[i].bb[1][1]
+              }
+          }
+        }
+
+        function bbLength (bbox, heightWidth) {
+          return bbox[1][heightWidth] - bbox[0][heightWidth]
+        }
+
+        force.initialize = function (_) {
+          var i, n = (nodes = _).length; boundingBoxes = new Array(n);
+          for (i = 0; i < n; ++i) boundingBoxes[i] = bbox(nodes[i], i, nodes);
+        };
+
+        force.iterations = function (_) {
+          return arguments.length ? (iterations = +_, force) : iterations;
+        };
+
+        force.strength = function (_) {
+          return arguments.length ? (strength = +_, force) : strength;
+        };
+
+        force.bbox = function (_) {
+          return arguments.length ? (bbox = typeof _ === "function" ? _ : constant(+_), force) : bbox;
+        };
+
+        return force;
+  }
+
+  exports.bboxCollide = bboxCollide;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+}));
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__src_quadtree__ = __webpack_require__(16);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "quadtree", function() { return __WEBPACK_IMPORTED_MODULE_0__src_quadtree__["a"]; });
+
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = addAll;
+/* harmony default export */ __webpack_exports__["a"] = (function(d) {
+  var x = +this._x.call(null, d),
+      y = +this._y.call(null, d);
+  return add(this.cover(x, y), x, y, d);
+});
+
+function add(tree, x, y, d) {
+  if (isNaN(x) || isNaN(y)) return tree; // ignore invalid points
+
+  var parent,
+      node = tree._root,
+      leaf = {data: d},
+      x0 = tree._x0,
+      y0 = tree._y0,
+      x1 = tree._x1,
+      y1 = tree._y1,
+      xm,
+      ym,
+      xp,
+      yp,
+      right,
+      bottom,
+      i,
+      j;
+
+  // If the tree is empty, initialize the root as a leaf.
+  if (!node) return tree._root = leaf, tree;
+
+  // Find the existing leaf for the new point, or add it.
+  while (node.length) {
+    if (right = x >= (xm = (x0 + x1) / 2)) x0 = xm; else x1 = xm;
+    if (bottom = y >= (ym = (y0 + y1) / 2)) y0 = ym; else y1 = ym;
+    if (parent = node, !(node = node[i = bottom << 1 | right])) return parent[i] = leaf, tree;
+  }
+
+  // Is the new point is exactly coincident with the existing point?
+  xp = +tree._x.call(null, node.data);
+  yp = +tree._y.call(null, node.data);
+  if (x === xp && y === yp) return leaf.next = node, parent ? parent[i] = leaf : tree._root = leaf, tree;
+
+  // Otherwise, split the leaf node until the old and new point are separated.
+  do {
+    parent = parent ? parent[i] = new Array(4) : tree._root = new Array(4);
+    if (right = x >= (xm = (x0 + x1) / 2)) x0 = xm; else x1 = xm;
+    if (bottom = y >= (ym = (y0 + y1) / 2)) y0 = ym; else y1 = ym;
+  } while ((i = bottom << 1 | right) === (j = (yp >= ym) << 1 | (xp >= xm)));
+  return parent[j] = node, parent[i] = leaf, tree;
+}
+
+function addAll(data) {
+  var d, i, n = data.length,
+      x,
+      y,
+      xz = new Array(n),
+      yz = new Array(n),
+      x0 = Infinity,
+      y0 = Infinity,
+      x1 = -Infinity,
+      y1 = -Infinity;
+
+  // Compute the points and their extent.
+  for (i = 0; i < n; ++i) {
+    if (isNaN(x = +this._x.call(null, d = data[i])) || isNaN(y = +this._y.call(null, d))) continue;
+    xz[i] = x;
+    yz[i] = y;
+    if (x < x0) x0 = x;
+    if (x > x1) x1 = x;
+    if (y < y0) y0 = y;
+    if (y > y1) y1 = y;
+  }
+
+  // If there were no (valid) points, inherit the existing extent.
+  if (x1 < x0) x0 = this._x0, x1 = this._x1;
+  if (y1 < y0) y0 = this._y0, y1 = this._y1;
+
+  // Expand the tree to cover the new points.
+  this.cover(x0, y0).cover(x1, y1);
+
+  // Add the new points.
+  for (i = 0; i < n; ++i) {
+    add(this, xz[i], yz[i], data[i]);
+  }
+
+  return this;
+}
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function(x, y) {
+  if (isNaN(x = +x) || isNaN(y = +y)) return this; // ignore invalid points
+
+  var x0 = this._x0,
+      y0 = this._y0,
+      x1 = this._x1,
+      y1 = this._y1;
+
+  // If the quadtree has no extent, initialize them.
+  // Integer extent are necessary so that if we later double the extent,
+  // the existing quadrant boundaries don’t change due to floating point error!
+  if (isNaN(x0)) {
+    x1 = (x0 = Math.floor(x)) + 1;
+    y1 = (y0 = Math.floor(y)) + 1;
+  }
+
+  // Otherwise, double repeatedly to cover.
+  else if (x0 > x || x > x1 || y0 > y || y > y1) {
+    var z = x1 - x0,
+        node = this._root,
+        parent,
+        i;
+
+    switch (i = (y < (y0 + y1) / 2) << 1 | (x < (x0 + x1) / 2)) {
+      case 0: {
+        do parent = new Array(4), parent[i] = node, node = parent;
+        while (z *= 2, x1 = x0 + z, y1 = y0 + z, x > x1 || y > y1);
+        break;
+      }
+      case 1: {
+        do parent = new Array(4), parent[i] = node, node = parent;
+        while (z *= 2, x0 = x1 - z, y1 = y0 + z, x0 > x || y > y1);
+        break;
+      }
+      case 2: {
+        do parent = new Array(4), parent[i] = node, node = parent;
+        while (z *= 2, x1 = x0 + z, y0 = y1 - z, x > x1 || y0 > y);
+        break;
+      }
+      case 3: {
+        do parent = new Array(4), parent[i] = node, node = parent;
+        while (z *= 2, x0 = x1 - z, y0 = y1 - z, x0 > x || y0 > y);
+        break;
+      }
+    }
+
+    if (this._root && this._root.length) this._root = node;
+  }
+
+  // If the quadtree covers the point already, just return.
+  else return this;
+
+  this._x0 = x0;
+  this._y0 = y0;
+  this._x1 = x1;
+  this._y1 = y1;
+  return this;
+});
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function() {
+  var data = [];
+  this.visit(function(node) {
+    if (!node.length) do data.push(node.data); while (node = node.next)
+  });
+  return data;
+});
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function(_) {
+  return arguments.length
+      ? this.cover(+_[0][0], +_[0][1]).cover(+_[1][0], +_[1][1])
+      : isNaN(this._x0) ? undefined : [[this._x0, this._y0], [this._x1, this._y1]];
+});
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__quad__ = __webpack_require__(8);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(x, y, radius) {
+  var data,
+      x0 = this._x0,
+      y0 = this._y0,
+      x1,
+      y1,
+      x2,
+      y2,
+      x3 = this._x1,
+      y3 = this._y1,
+      quads = [],
+      node = this._root,
+      q,
+      i;
+
+  if (node) quads.push(new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](node, x0, y0, x3, y3));
+  if (radius == null) radius = Infinity;
+  else {
+    x0 = x - radius, y0 = y - radius;
+    x3 = x + radius, y3 = y + radius;
+    radius *= radius;
+  }
+
+  while (q = quads.pop()) {
+
+    // Stop searching if this quadrant can’t contain a closer node.
+    if (!(node = q.node)
+        || (x1 = q.x0) > x3
+        || (y1 = q.y0) > y3
+        || (x2 = q.x1) < x0
+        || (y2 = q.y1) < y0) continue;
+
+    // Bisect the current quadrant.
+    if (node.length) {
+      var xm = (x1 + x2) / 2,
+          ym = (y1 + y2) / 2;
+
+      quads.push(
+        new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](node[3], xm, ym, x2, y2),
+        new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](node[2], x1, ym, xm, y2),
+        new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](node[1], xm, y1, x2, ym),
+        new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](node[0], x1, y1, xm, ym)
+      );
+
+      // Visit the closest quadrant first.
+      if (i = (y >= ym) << 1 | (x >= xm)) {
+        q = quads[quads.length - 1];
+        quads[quads.length - 1] = quads[quads.length - 1 - i];
+        quads[quads.length - 1 - i] = q;
+      }
+    }
+
+    // Visit this point. (Visiting coincident points isn’t necessary!)
+    else {
+      var dx = x - +this._x.call(null, node.data),
+          dy = y - +this._y.call(null, node.data),
+          d2 = dx * dx + dy * dy;
+      if (d2 < radius) {
+        var d = Math.sqrt(radius = d2);
+        x0 = x - d, y0 = y - d;
+        x3 = x + d, y3 = y + d;
+        data = node.data;
+      }
+    }
+  }
+
+  return data;
+});
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__add__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cover__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__data__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__extent__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__find__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__remove__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__root__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__size__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__visit__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__visitAfter__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__x__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__y__ = __webpack_require__(23);
+/* harmony export (immutable) */ __webpack_exports__["a"] = quadtree;
+
+
+
+
+
+
+
+
+
+
+
+
+
+function quadtree(nodes, x, y) {
+  var tree = new Quadtree(x == null ? __WEBPACK_IMPORTED_MODULE_10__x__["a" /* defaultX */] : x, y == null ? __WEBPACK_IMPORTED_MODULE_11__y__["a" /* defaultY */] : y, NaN, NaN, NaN, NaN);
+  return nodes == null ? tree : tree.addAll(nodes);
+}
+
+function Quadtree(x, y, x0, y0, x1, y1) {
+  this._x = x;
+  this._y = y;
+  this._x0 = x0;
+  this._y0 = y0;
+  this._x1 = x1;
+  this._y1 = y1;
+  this._root = undefined;
+}
+
+function leaf_copy(leaf) {
+  var copy = {data: leaf.data}, next = copy;
+  while (leaf = leaf.next) next = next.next = {data: leaf.data};
+  return copy;
+}
+
+var treeProto = quadtree.prototype = Quadtree.prototype;
+
+treeProto.copy = function() {
+  var copy = new Quadtree(this._x, this._y, this._x0, this._y0, this._x1, this._y1),
+      node = this._root,
+      nodes,
+      child;
+
+  if (!node) return copy;
+
+  if (!node.length) return copy._root = leaf_copy(node), copy;
+
+  nodes = [{source: node, target: copy._root = new Array(4)}];
+  while (node = nodes.pop()) {
+    for (var i = 0; i < 4; ++i) {
+      if (child = node.source[i]) {
+        if (child.length) nodes.push({source: child, target: node.target[i] = new Array(4)});
+        else node.target[i] = leaf_copy(child);
+      }
+    }
+  }
+
+  return copy;
+};
+
+treeProto.add = __WEBPACK_IMPORTED_MODULE_0__add__["a" /* default */];
+treeProto.addAll = __WEBPACK_IMPORTED_MODULE_0__add__["b" /* addAll */];
+treeProto.cover = __WEBPACK_IMPORTED_MODULE_1__cover__["a" /* default */];
+treeProto.data = __WEBPACK_IMPORTED_MODULE_2__data__["a" /* default */];
+treeProto.extent = __WEBPACK_IMPORTED_MODULE_3__extent__["a" /* default */];
+treeProto.find = __WEBPACK_IMPORTED_MODULE_4__find__["a" /* default */];
+treeProto.remove = __WEBPACK_IMPORTED_MODULE_5__remove__["a" /* default */];
+treeProto.removeAll = __WEBPACK_IMPORTED_MODULE_5__remove__["b" /* removeAll */];
+treeProto.root = __WEBPACK_IMPORTED_MODULE_6__root__["a" /* default */];
+treeProto.size = __WEBPACK_IMPORTED_MODULE_7__size__["a" /* default */];
+treeProto.visit = __WEBPACK_IMPORTED_MODULE_8__visit__["a" /* default */];
+treeProto.visitAfter = __WEBPACK_IMPORTED_MODULE_9__visitAfter__["a" /* default */];
+treeProto.x = __WEBPACK_IMPORTED_MODULE_10__x__["b" /* default */];
+treeProto.y = __WEBPACK_IMPORTED_MODULE_11__y__["b" /* default */];
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = removeAll;
+/* harmony default export */ __webpack_exports__["a"] = (function(d) {
+  if (isNaN(x = +this._x.call(null, d)) || isNaN(y = +this._y.call(null, d))) return this; // ignore invalid points
+
+  var parent,
+      node = this._root,
+      retainer,
+      previous,
+      next,
+      x0 = this._x0,
+      y0 = this._y0,
+      x1 = this._x1,
+      y1 = this._y1,
+      x,
+      y,
+      xm,
+      ym,
+      right,
+      bottom,
+      i,
+      j;
+
+  // If the tree is empty, initialize the root as a leaf.
+  if (!node) return this;
+
+  // Find the leaf node for the point.
+  // While descending, also retain the deepest parent with a non-removed sibling.
+  if (node.length) while (true) {
+    if (right = x >= (xm = (x0 + x1) / 2)) x0 = xm; else x1 = xm;
+    if (bottom = y >= (ym = (y0 + y1) / 2)) y0 = ym; else y1 = ym;
+    if (!(parent = node, node = node[i = bottom << 1 | right])) return this;
+    if (!node.length) break;
+    if (parent[(i + 1) & 3] || parent[(i + 2) & 3] || parent[(i + 3) & 3]) retainer = parent, j = i;
+  }
+
+  // Find the point to remove.
+  while (node.data !== d) if (!(previous = node, node = node.next)) return this;
+  if (next = node.next) delete node.next;
+
+  // If there are multiple coincident points, remove just the point.
+  if (previous) return (next ? previous.next = next : delete previous.next), this;
+
+  // If this is the root point, remove it.
+  if (!parent) return this._root = next, this;
+
+  // Remove this leaf.
+  next ? parent[i] = next : delete parent[i];
+
+  // If the parent now contains exactly one leaf, collapse superfluous parents.
+  if ((node = parent[0] || parent[1] || parent[2] || parent[3])
+      && node === (parent[3] || parent[2] || parent[1] || parent[0])
+      && !node.length) {
+    if (retainer) retainer[j] = node;
+    else this._root = node;
+  }
+
+  return this;
+});
+
+function removeAll(data) {
+  for (var i = 0, n = data.length; i < n; ++i) this.remove(data[i]);
+  return this;
+}
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function() {
+  return this._root;
+});
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (function() {
+  var size = 0;
+  this.visit(function(node) {
+    if (!node.length) do ++size; while (node = node.next)
+  });
+  return size;
+});
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__quad__ = __webpack_require__(8);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(callback) {
+  var quads = [], q, node = this._root, child, x0, y0, x1, y1;
+  if (node) quads.push(new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](node, this._x0, this._y0, this._x1, this._y1));
+  while (q = quads.pop()) {
+    if (!callback(node = q.node, x0 = q.x0, y0 = q.y0, x1 = q.x1, y1 = q.y1) && node.length) {
+      var xm = (x0 + x1) / 2, ym = (y0 + y1) / 2;
+      if (child = node[3]) quads.push(new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](child, xm, ym, x1, y1));
+      if (child = node[2]) quads.push(new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](child, x0, ym, xm, y1));
+      if (child = node[1]) quads.push(new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](child, xm, y0, x1, ym));
+      if (child = node[0]) quads.push(new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](child, x0, y0, xm, ym));
+    }
+  }
+  return this;
+});
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__quad__ = __webpack_require__(8);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (function(callback) {
+  var quads = [], next = [], q;
+  if (this._root) quads.push(new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](this._root, this._x0, this._y0, this._x1, this._y1));
+  while (q = quads.pop()) {
+    var node = q.node;
+    if (node.length) {
+      var child, x0 = q.x0, y0 = q.y0, x1 = q.x1, y1 = q.y1, xm = (x0 + x1) / 2, ym = (y0 + y1) / 2;
+      if (child = node[0]) quads.push(new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](child, x0, y0, xm, ym));
+      if (child = node[1]) quads.push(new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](child, xm, y0, x1, ym));
+      if (child = node[2]) quads.push(new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](child, x0, ym, xm, y1));
+      if (child = node[3]) quads.push(new __WEBPACK_IMPORTED_MODULE_0__quad__["a" /* default */](child, xm, ym, x1, y1));
+    }
+    next.push(q);
+  }
+  while (q = next.pop()) {
+    callback(q.node, q.x0, q.y0, q.x1, q.y1);
+  }
+  return this;
+});
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = defaultX;
+function defaultX(d) {
+  return d[0];
+}
+
+/* harmony default export */ __webpack_exports__["b"] = (function(_) {
+  return arguments.length ? (this._x = _, this) : this._x;
+});
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = defaultY;
+function defaultY(d) {
+  return d[1];
+}
+
+/* harmony default export */ __webpack_exports__["b"] = (function(_) {
+  return arguments.length ? (this._y = _, this) : this._y;
+});
 
 
 /***/ })

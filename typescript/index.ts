@@ -1,12 +1,11 @@
 const SERVICE_URL = "https://raw.githubusercontent.com/DealPete/forceDirected/master/countries.json";
-//<img src="blank.gif" class="flag flag-cz" alt="Czech Republic" />
+
 //https://bl.ocks.org/curran/c48b1c89157cb98e389a63c4acc240e3
 //https://medium.com/@sxywu/understanding-the-force-ef1237017d5
-//http://stackoverflow.com/questions/41232299/svg-sprite-pattern-not-working-in-d3
 //http://stackoverflow.com/questions/28111480/adding-tooltip-to-svg-rect-tag
 
-require("./sass/styles.scss");
 import * as d3 from 'd3';
+import * as d3_box from 'd3-bboxCollide';
 
 class Margin {
     top: number;
@@ -59,61 +58,54 @@ class ForceDirectedGraph
  createChart(nodes:Country[], links:Link[])
  {
    
-//top,right,bottom,left
+    //top,right,bottom,left
     let margin = new Margin(0, 50, 0, 50);
-    let height = 800 - margin.top - margin.bottom;
-    let width = 1000 - margin.left - margin.right;
+    let height = 900 - margin.top - margin.bottom;
+    let width = 1200 - margin.left - margin.right;
 
     let svgChart = d3.select("#chart").append("svg")
-        .style("background", "#00FF00")
-       .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .attr("transform", "translate(" + margin.left + ", " + margin.top +")")
-        .append("g");
+        .style("background", "#000")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom);
+        
     
-
-    let tooltip = d3.select("#tooltip")
-            .append("div")
-            .style("pointer-events", "none")
-            .style("position", "absolute")
-            .style("padding", "10px")
-            .style("background", "black")
-            .style("color", "white")
-            .style("width", "150px")
-            .style("opacity", 0);
-
-    let node = svgChart.selectAll("rect")
-            .data(nodes)
-            .enter()
-            .append("rect")
-            .attr("class", c => {
-                return "flag flag-" + c.code
-            });
-            
-            
-    var link = svgChart.selectAll("line")
+                            
+    let link = svgChart.append("g")
+            .selectAll("line")
             .data(links).enter()
             .append("line")
-            .attr("stroke", "#FF0000")
-            .attr("stroke-width", 1)
+            .attr("stroke", "#FFF")
+            .attr("stroke-width", 1);
+
+    let node = svgChart.append("g")
+        .selectAll("image")
+        .data(nodes)
+        .enter()
+        .append("image")
+        .attr("width", 16)
+        .attr("height", 11)
+        .attr("xlink:xlink:href", (d:Country) =>
+        {
+            return "./flags/" + d.code +".png";
+        });
+
+   var rectangleCollide = d3_box.bboxCollide([[-20,-20],[20,20]])
 
     let sim = d3.forceSimulation<Country, Link>(nodes)
     .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("charge", d3.forceManyBody().distanceMax(180))
+    .force("charge", d3.forceManyBody().distanceMin(50).distanceMax(50))
+    .force("collide", rectangleCollide)
     //.strength(-10))
-    .force("links", d3.forceLink(links));
+    .force("links", d3.forceLink(links).distance(50));
 
     sim.on("tick", () => 
     {
+   //http://bl.ocks.org/natebates/273b99ddf86e2e2e58ff
         node.attr("x", (d:Country) => {
                 return d.x;
             })
             .attr("y", (d:Country) => {
                 return d.y;
-            })
-            .append("title")
-            .html((d:Country) => {
-                return d.name
             });
 
         link.attr("x1", 
@@ -124,10 +116,17 @@ class ForceDirectedGraph
                 return d.source.y;
             })
             .attr("x2", (d:Link) => {
-                return d.target.x;})
+                return d.target.x;
+            })
             .attr("y2", (d:Link) => {
-                return d.target.y;});
-            });    
+                return d.target.y;
+            });
+    });    
+
+    node.append("title")
+        .text((d:Country) => {
+            return d.name
+        });
  }
  fetchData()
  {
