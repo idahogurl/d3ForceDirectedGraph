@@ -58,7 +58,7 @@ var ForceDirectedGraph = (function () {
             .attr("width", 16)
             .attr("height", 11)
             .attr("xlink:xlink:href", function (d) {
-            return "./flags/" + d.code + ".png";
+            return "http://www.dynamicdiner.com/flags/" + d.code + ".png";
         });
         var rectangleCollide = d3_box.bboxCollide([[-20, -20], [20, 20]]);
         var sim = d3.forceSimulation(nodes)

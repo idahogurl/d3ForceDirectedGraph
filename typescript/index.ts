@@ -86,7 +86,7 @@ class ForceDirectedGraph
         .attr("height", 11)
         .attr("xlink:xlink:href", (d:Country) =>
         {
-            return "./flags/" + d.code +".png";
+            return "http://www.dynamicdiner.com/flags/" + d.code +".png";
         });
 
    var rectangleCollide = d3_box.bboxCollide([[-20,-20],[20,20]])
